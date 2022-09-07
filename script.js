@@ -162,6 +162,7 @@ btnClose.addEventListener('click',()=>{
     Delete.addEventListener('click',(e)=>{
         e.preventDefault();
         deleteNameHandle(deleteName.value)
+        listLi.innerHTML = listSorte
         render(arrayHours)
         deleteName.value = ''
     })
