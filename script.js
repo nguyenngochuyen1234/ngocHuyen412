@@ -1,10 +1,7 @@
-        var test = ["huyen"]
-    localStorage.setItem('testList',JSON.stringify(test))
-    function init(){
-        let data = JSON.parse(localStorage.getItem('testList'))
-        console.log(data)
-    }
-const btnRenderList = document.getElementById('btnRenderList');
+
+    
+    var uppdateArrayLesson = []
+    const btnRenderList = document.getElementById('btnRenderList');
     const btnClose = document.getElementById('btnClose');
     const Delete = document.getElementById('btnDelete');
     const listContainer = document.getElementById('listContainer');
@@ -15,14 +12,6 @@ const btnRenderList = document.getElementById('btnRenderList');
     const hours = document.querySelectorAll('#ca')
     const listLi = document.getElementById("listLi")
     var inputs = [stringName, stringDays, stringHours]
-    hours.forEach((hour,index)=>{
-        arrayHours = `<td>${index+1}</td>`
-        for(let i = 1;i<7;i++){
-            arrayHours += `<td></td>`
-        }
-        hour.innerHTML = arrayHours
-    })
-    //Danh sách sắp xếp theo thứ tự
     var listSorte = ''
     var arrayLesson = [
         {
@@ -67,13 +56,11 @@ const btnRenderList = document.getElementById('btnRenderList');
                 Thu: [[],[],[],[],[],[]]
             },
         ]
-    // function updateArrayLessonHandle(){
-    //     return arrayLesson = JSON.parse(localStorage.getItem('list'));    
-    // }
-
+        arrayLesson = JSON.parse(localStorage.getItem('list'))
+        render(arrayLesson)
         var updateArrayLesson
         var error = 'Nhập sai, vui lòng nhập lại'
-        //check nhập lỗi
+//check nhập lỗi
         function checkInput(getDaysValue, getArrayHoursValue){
             let testLenght = (getDaysValue.length === getArrayHoursValue.length || undefined)
             let testLimitDays = 1
@@ -90,9 +77,9 @@ const btnRenderList = document.getElementById('btnRenderList');
         }
         
 //submit
-        document.getElementById('myform').addEventListener('submit', function(e){
-            e.preventDefault();
-            // updateArrayLessonHandle()
+function submit(){
+    document.getElementById('myform').addEventListener('submit', function(e){
+        e.preventDefault();
             var getArrayHoursValue = []
             var stringNamesValue = stringName.value
             var getDaysValue = stringDays.value.trim().split(';')
@@ -112,7 +99,7 @@ const btnRenderList = document.getElementById('btnRenderList');
                 getArrayHoursValue.push(getHourValue.split('-'))
             })
 
-            // check nhập lỗi
+// check nhập lỗi
             checkInput(getDaysValue,getArrayHoursValue) || alert('Nhập lỗi, vui lòng nhập lại')
             for(let i = 0;i<getArrayHoursValue.length;i++){
                 getArrayHoursValue[i].forEach((everyHours) =>{
@@ -123,60 +110,66 @@ const btnRenderList = document.getElementById('btnRenderList');
                     })
                 })
             }
-            // localStorage.setItem('list', JSON.stringify(arrayLesson));
-            
-            render(arrayHours)
+            localStorage.setItem('list',JSON.stringify(arrayLesson))
             inputs.forEach(input=>{
                 input.value = ''
             })
             listSorte = ''
             for(let i = 0;i<10;i++){
-                    arrayLesson[i].Thu.forEach((names,index)=>{
-                        names.length > 3 && sortArray.push(names.length)
-                    })
+                arrayLesson[i].Thu.forEach((names,index)=>{
+                    names.length > 3 && sortArray.push(names.length)
+                })
             }    
             console.log(sortedArray(sortArray))    
             for (sorted of sortedArray(sortArray)){
                 for(let i = 0;i<10;i++){
-                        arrayLesson[i].Thu.forEach((names,index)=>{
-                            listSorte += sorted === names.length ? `<li>Thứ: ${index+2}      Ca: ${i+1}      Số thành viên: ${sorted}</li>` : ``
-                        })
-                    }
+                    arrayLesson[i].Thu.forEach((names,index)=>{
+                        listSorte += sorted === names.length ? `<li>Thứ: ${index+2}      Ca: ${i+1}      Số thành viên: ${sorted}</li>` : ``
+                    })
+                }
             }        
-            //Render danh sachs thành viên
-            console.log(listSorte)
+//Render danh sachs thành viên
             listLi.innerHTML = listSorte
+            render(arrayLesson)
         });
+    }
+    submit()
+    function init(){
+        updateArrayLesson = JSON.parse(localStorage.getItem('list'))
+        render(updateArrayLesson)
+    }
 //hiện danh sách
-btnRenderList.addEventListener('click',()=>{
-    listContainer.classList.add('show')
-})
+    btnRenderList.addEventListener('click',()=>{
+        listContainer.classList.add('show')
+    })
 //Ẩn danh sách
-btnClose.addEventListener('click',()=>{
-    listContainer.classList.remove('show')
-})
+    btnClose.addEventListener('click',()=>{
+        listContainer.classList.remove('show')
+    })
 // Xóa tên
     function deleteNameHandle(Name){
         arrayLesson.forEach(lesson=>{
-                lesson.Thu.forEach(tens=>{
-                    tens.forEach((ten,index)=>{
-                        ten===Name && tens.splice(index,1) 
-                    })
+            lesson.Thu.forEach(tens=>{
+                tens.forEach((ten,index)=>{
+                    ten===Name && tens.splice(index,1) 
+                })
             })
         })
+        localStorage.setItem('list',JSON.stringify(arrayLesson))
     }
     Delete.addEventListener('click',(e)=>{
         e.preventDefault();
         deleteNameHandle(deleteName.value)
-        listLi.innerHTML = listSorte
-        render(arrayHours)
+        render(arrayLesson)
+        submit()
         deleteName.value = ''
     })
-
-    function render(arrayHours){
+    var sortArray
+    function render(arrayLesson){
+        var arrayHours = ''
         hours.forEach((hour,index)=>{
             sortArray = []
-            // updateArrayLessonHandle()
+// updateArrayLessonHandle()
             arrayHours = `<td>${index+1}</td>`
             arrayLesson[index].Thu.forEach(names=>{
                 var arrayNames = ''
@@ -188,7 +181,7 @@ btnClose.addEventListener('click',()=>{
             }
         )
     }
-    //Loại bỏ số trùng nhau và sắp xếp theo thứ tự
+//Loại bỏ số trùng nhau và sắp xếp theo thứ tự
     function sortedArray(array){
         array.sort((a, b) => b - a);
         mySet = new Set(array)
