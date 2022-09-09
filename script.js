@@ -1,4 +1,10 @@
-    const btnRenderList = document.getElementById('btnRenderList');
+        var test = ["huyen"]
+    localStorage.setItem('testList',JSON.stringify(test))
+    function init(){
+        let data = JSON.parse(localStorage.getItem('testList'))
+        console.log(data)
+    }
+const btnRenderList = document.getElementById('btnRenderList');
     const btnClose = document.getElementById('btnClose');
     const Delete = document.getElementById('btnDelete');
     const listContainer = document.getElementById('listContainer');
